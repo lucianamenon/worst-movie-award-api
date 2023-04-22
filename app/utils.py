@@ -11,6 +11,7 @@ def populate_tables(csv_path):
     Movie.delete_all()
     Producer.delete_all()
     MovieProducer.delete_all()
+    db.session.commit()
 
     csv_file = pd.read_csv(csv_path, delimiter=";")
 
@@ -31,7 +32,7 @@ def populate_tables(csv_path):
             if not producer_id:
                 imported_producers += 1
                 producer_id = imported_producers
-                producer = Producer(id=imported_producers, producer=name)
+                producer = Producer(id=producer_id, producer=name)
                 Producer.insert(producer)
 
             movie_producers = MovieProducer(movie.id, producer_id)
