@@ -40,3 +40,39 @@ def populate_tables(csv_path):
         imported_rows += 1
 
     print(f"Data loading complete! Imported {imported_rows} movies. Imported {imported_producers} different producers. ")
+
+def get_min_max_interval():
+
+    movie_producers = {}
+    for item in MovieProducer.get_producer_winners():
+        if not item.producer_name in movie_producers:
+            movie_producers[item.producer_name] = [item.movie_year]
+        else:
+            years_list = movie_producers[item.producer_name]
+            years_list.append(item.movie_year)
+            movie_producers[item.producer_name] = years_list
+
+    all_intervals = []
+    for item in movie_producers:
+        years_list = movie_producers[item]
+        #ignore produces that won only once
+        if len(years_list) == 1:
+            continue
+        for i in range(len(years_list)-1):
+            interval = {}
+            interval["producer"] = item
+            interval["interval"] = years_list[i+1] - years_list[i]
+            interval["previousWin"] = years_list[i]
+            interval["followingWin"] = years_list[i+1]
+            all_intervals.append(interval)
+
+    list_max_interval, list_min_interval = [], []
+    max_interval = max(all_intervals, key=lambda x:x['interval'])['interval']
+    min_interval = min(all_intervals, key=lambda x:x['interval'])['interval']
+    for item in all_intervals:
+        if item['interval'] == max_interval:
+            list_max_interval.append(item)
+        if item['interval'] == min_interval:
+            list_min_interval.append(item)
+
+    return {"min": list_min_interval, "max": list_max_interval}

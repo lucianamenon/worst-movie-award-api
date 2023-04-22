@@ -2,6 +2,7 @@ from http import HTTPStatus
 from flask import Flask, jsonify, make_response
 
 import app.config as config
+import app.utils as utils
 import app.database as database
 
 from app.models import Movie, Producer, MovieProducer
@@ -15,12 +16,17 @@ app.config['PROPAGATE_EXCEPTIONS'] = True
 def create_tables():
     database.db.init_app(app)
     database.db.create_all()
-    #utils.populate_tables(config.MOVIES_DATA_PATH)
+    utils.populate_tables(config.MOVIES_DATA_PATH)
 
 @app.route('/api/v1/texo/check', methods=['GET'])
 def health_check():
     """Health check route"""
     return jsonify({}), 204
+
+@app.route('/api/v1/texo/producers-award-interval', methods=['GET'])
+def get_producer_interval():
+    data = utils.get_min_max_interval()
+    return jsonify(data), 200
 
 @app.route('/api/v1/texo/movies', methods=['GET'])
 def get_movies():

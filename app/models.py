@@ -96,6 +96,17 @@ class MovieProducer(db.Model):
         return {'movie_id': self.movie_id, 'producer_id': self.producer_id}
 
     @classmethod
+    def get_producer_winners(cls):
+        result = db.engine.execute(
+            """SELECT producers.producer AS producer_name, movies.year AS movie_year
+                FROM movieProducers
+                    INNER JOIN movies ON movies.id = movieProducers.movie_id
+                    INNER JOIN producers ON producers.id = movieProducers.producer_id
+                WHERE movies.winner ORDER BY producer_name, movie_year"""
+        )
+        return result
+
+    @classmethod
     def get_all(cls):
         result = db.engine.execute("SELECT * FROM movieProducers")
         rows = result.fetchall()
