@@ -1,3 +1,4 @@
 class BaseConfig():
-	SQLALCHEMY_DATABASE_URI = "sqlite+pysqlite:///:memory:"
-	DATABASE_NAME = "worst_movie_award"
+    DATABASE_NAME = "worst_movie_award"
+    SQLALCHEMY_DATABASE_URI = f"sqlite:///{DATABASE_NAME}.db"
+    MOVIES_DATA_PATH = "movielist.csv"

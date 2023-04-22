@@ -1,19 +1,49 @@
-from flask import Flask, make_response, jsonify
-from flask_sqlalchemy import SQLAlchemy
 from http import HTTPStatus
+from flask import Flask, jsonify, make_response
 
 import app.config as config
+import app.database as database
+
+from app.models import Movie, Producer, MovieProducer
 
 app = Flask(__name__)
-
-#DB Config
 app.config['SQLALCHEMY_DATABASE_URI'] = config.SQLALCHEMY_DATABASE_URI
-db = SQLAlchemy(app)
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['PROPAGATE_EXCEPTIONS'] = True
+
+@app.before_first_request
+def create_tables():
+    database.db.init_app(app)
+    database.db.create_all()
+    #utils.populate_tables(config.MOVIES_DATA_PATH)
 
 @app.route('/api/v1/texo/check', methods=['GET'])
 def health_check():
     """Health check route"""
     return jsonify({}), 204
+
+@app.route('/api/v1/texo/movies', methods=['GET'])
+def get_movies():
+    data = Movie.get_all()
+    return jsonify(menssage="List of movies", data=data), 200
+
+@app.route('/api/v1/texo/producers', methods=['GET'])
+def get_producers():
+    data = Producer.get_all()
+    return jsonify(menssage="List of producers", data=data), 200
+
+@app.route('/api/v1/texo/producer-groups', methods=['GET'])
+def get_producer_groups():
+    data = Movie.get_producers()
+    return jsonify(menssage="List of producers", data=data), 200
+
+@app.route('/api/v1/texo/movie-producers', methods=['GET'])
+def get_movie_Producers():
+    print('antes')
+    data = MovieProducer.get_all()
+    print('depois')
+    return jsonify(menssage="List of movie producers", data=data), 200
+
 
 @app.errorhandler(HTTPStatus.INTERNAL_SERVER_ERROR)
 @app.errorhandler(Exception)
