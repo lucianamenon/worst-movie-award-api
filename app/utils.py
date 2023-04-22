@@ -1,5 +1,5 @@
 import pandas as pd
-from app.models import Movie, Producer, MovieProducer
+from app.models import db, Movie, Producer, MovieProducer
 
 def populate_tables(csv_path):
 
@@ -14,9 +14,10 @@ def populate_tables(csv_path):
 
     csv_file = pd.read_csv(csv_path, delimiter=";")
 
-    for _, row in csv_file.iterrows():
+    for i, row in csv_file.iterrows():
 
         movie = Movie(
+            id=i+1,
             year=row["year"],
             title=row["title"],
             studios=row["studios"],
@@ -24,21 +25,20 @@ def populate_tables(csv_path):
             winner=True if row["winner"] == "yes" else False
         )
         Movie.insert(movie)
-        print(Movie.json(movie))
 
         for name in [x.strip() for x in row["producers"].replace(', and ', ',').replace(' and ', ',').split(',')]:
             producer_id = Producer.get_producer(name)
             if not producer_id:
-                producer = Producer(producer=name)
-                Producer.insert(producer)
                 imported_producers += 1
-                producer_id = producer.id
+                producer = Producer(id=imported_producers, producer=name)
+                Producer.insert(producer)
 
-            movie_producers = MovieProducer(movie.id, producer_id)
+            movie_producers = MovieProducer(movie.id, producer.id)
             MovieProducer.insert(movie_producers)
 
         imported_rows += 1
 
+    db.session.commit()
     print(f"Data loading complete! Imported {imported_rows} movies. Imported {imported_producers} different producers. ")
 
 def get_min_max_interval():

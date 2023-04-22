@@ -10,7 +10,8 @@ class Movie(db.Model):
     producers = db.Column(db.String, nullable=False)
     winner = db.Column(db.Boolean, default=False)
 
-    def __init__(self, year, title, studios, producers, winner):
+    def __init__(self, id, year, title, studios, producers, winner):
+        self.id = id
         self.year = year
         self.title = title
         self.studios = studios
@@ -42,16 +43,17 @@ class Movie(db.Model):
     def delete_all(cls):
         return cls.query.delete()
 
-    def insert(self) -> id:
+    def insert(self):
         db.session.add(self)
-        db.session.commit()
+
 
 class Producer(db.Model):
     __tablename__ = "producers"
     id = db.Column(db.Integer, primary_key=True)
     producer = db.Column(db.String, nullable=False)
 
-    def __init__(self, producer):
+    def __init__(self, id, producer):
+        self.id = id
         self.producer = producer
 
     def json(self):
@@ -81,7 +83,6 @@ class Producer(db.Model):
 
     def insert(self) -> None:
         db.session.add(self)
-        db.session.commit()
 
 class MovieProducer(db.Model):
     __tablename__ = "movieProducers"
@@ -121,4 +122,3 @@ class MovieProducer(db.Model):
 
     def insert(self) -> None:
         db.session.add(self)
-        db.session.commit()
