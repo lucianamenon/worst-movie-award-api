@@ -12,12 +12,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = config.SQLALCHEMY_DATABASE_URI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True
 
-@app.before_first_request
-def create_tables():
-    database.db.init_app(app)
-    database.db.create_all()
-    utils.populate_tables(config.MOVIES_DATA_PATH)
-
 @app.route('/api/v1/texo/check', methods=['GET'])
 def health_check():
     """Health check route"""
@@ -50,15 +44,22 @@ def get_movie_Producers():
     print('depois')
     return jsonify(menssage="List of movie producers", data=data), 200
 
-
 @app.errorhandler(HTTPStatus.INTERNAL_SERVER_ERROR)
 @app.errorhandler(Exception)
 def unexpected_error(e):
     """Handle exceptions by returning swagger-compliant json."""
     code = '500'
     message = 'The server encountered an internal error and was unable to complete your request.'
-    print(e)
     return jsonify(code=code, menssage=message), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+    with app.app_context():
+        try:
+            database.db.init_app(app)
+            database.db.create_all()
+            utils.populate_tables(config.MOVIES_DATA_PATH)
+        except Exception as e:
+            print('The server encountered an internal error and was unable to start. Check your configuration file!')
+            print(e)
+        else:
+            app.run(host='0.0.0.0', debug=False)

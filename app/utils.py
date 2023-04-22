@@ -30,16 +30,17 @@ def populate_tables(csv_path):
             producer_id = Producer.get_producer(name)
             if not producer_id:
                 imported_producers += 1
+                producer_id = imported_producers
                 producer = Producer(id=imported_producers, producer=name)
                 Producer.insert(producer)
 
-            movie_producers = MovieProducer(movie.id, producer.id)
+            movie_producers = MovieProducer(movie.id, producer_id)
             MovieProducer.insert(movie_producers)
 
         imported_rows += 1
 
     db.session.commit()
-    print(f"Data loading complete! Imported {imported_rows} movies. Imported {imported_producers} different producers. ")
+    print(f"\nData loading complete! Imported {imported_rows} movies. Imported {imported_producers} different producers.\n")
 
 def get_min_max_interval():
 
