@@ -1,5 +1,6 @@
+import traceback
 from http import HTTPStatus
-from flask import Flask, jsonify, make_response
+from flask import Flask, jsonify
 
 import app.config as config
 import app.utils as utils
@@ -32,24 +33,13 @@ def get_producers():
     data = Producer.get_all()
     return jsonify(menssage="List of producers", data=data), 200
 
-@app.route('/api/v1/texo/producer-groups', methods=['GET'])
-def get_producer_groups():
-    data = Movie.get_producers()
-    return jsonify(menssage="List of producers", data=data), 200
-
-@app.route('/api/v1/texo/movie-producers', methods=['GET'])
-def get_movie_Producers():
-    print('antes')
-    data = MovieProducer.get_all()
-    print('depois')
-    return jsonify(menssage="List of movie producers", data=data), 200
-
 @app.errorhandler(HTTPStatus.INTERNAL_SERVER_ERROR)
 @app.errorhandler(Exception)
 def unexpected_error(e):
     """Handle exceptions by returning swagger-compliant json."""
     code = '500'
     message = 'The server encountered an internal error and was unable to complete your request.'
+    print(print(traceback.format_exc()))
     return jsonify(code=code, menssage=message), 500
 
 if __name__ == '__main__':

@@ -31,19 +31,10 @@ class Movie(db.Model):
         return movies
 
     @classmethod
-    def get_producers(cls):
-        result = db.engine.execute("SELECT distinct(producers) FROM movies")
-        rows = result.fetchall()
-        producers = []
-        for item in rows:
-            producers.append({'producers': item.producers})
-        return producers
+    def delete_all(cls) -> None:
+        cls.query.delete()
 
-    @classmethod
-    def delete_all(cls):
-        return cls.query.delete()
-
-    def insert(self):
+    def insert(self) -> None:
         db.session.add(self)
 
 
@@ -78,8 +69,8 @@ class Producer(db.Model):
         return producer_id
 
     @classmethod
-    def delete_all(cls):
-        return cls.query.delete()
+    def delete_all(cls) -> None:
+        cls.query.delete()
 
     def insert(self) -> None:
         db.session.add(self)
@@ -93,9 +84,6 @@ class MovieProducer(db.Model):
         self.movie_id = movie_id
         self.producer_id = producer_id
 
-    def json(self):
-        return {'movie_id': self.movie_id, 'producer_id': self.producer_id}
-
     @classmethod
     def get_producer_winners(cls):
         result = db.engine.execute(
@@ -108,17 +96,8 @@ class MovieProducer(db.Model):
         return result
 
     @classmethod
-    def get_all(cls):
-        result = db.engine.execute("SELECT * FROM movieProducers")
-        rows = result.fetchall()
-        movie_producers = []
-        for item in rows:
-            movie_producers.append(cls.json(item))
-        return movie_producers
-
-    @classmethod
-    def delete_all(cls):
-        return cls.query.delete()
+    def delete_all(cls) -> None:
+        cls.query.delete()
 
     def insert(self) -> None:
         db.session.add(self)
