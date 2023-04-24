@@ -13,6 +13,4 @@ RUN pip install -r requirements.txt
 # copy every content from the local file to the image
 COPY . /app
 
-CMD exec gunicorn -b 0.0.0.0:5000 main:app --timeout 60
-
-#CMD [ "python", "./main.py" ]
+CMD [ "python", "./main.py" ]
