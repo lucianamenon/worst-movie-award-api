@@ -1,5 +1,5 @@
 Flask
 flask_sqlalchemy
+flask_testing
 sqlalchemy<2.0.0
-gunicorn
 pandas

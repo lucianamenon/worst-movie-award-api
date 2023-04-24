@@ -10,7 +10,10 @@ flask==2.2.3
     # via
     #   -r requirements.in
     #   flask-sqlalchemy
+    #   flask-testing
 flask-sqlalchemy==3.0.3
+    # via -r requirements.in
+flask-testing==0.8.1
     # via -r requirements.in
 greenlet==2.0.2
     # via sqlalchemy
