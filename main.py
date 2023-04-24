@@ -3,7 +3,7 @@ from http import HTTPStatus
 from flask import Flask, jsonify
 
 import app.config as config
-import app.utils as utils
+from app.services import CSVService, MinMaxService
 import app.database as database
 
 from app.models import Movie, Producer, MovieProducer
@@ -20,7 +20,7 @@ def health_check():
 
 @app.route('/api/v1/texo/producers-award-interval', methods=['GET'])
 def get_producer_interval():
-    data = utils.get_min_max_interval()
+    data = MinMaxService.get_min_max_interval()
     return jsonify(data), 200
 
 @app.route('/api/v1/texo/movies', methods=['GET'])
@@ -47,9 +47,10 @@ if __name__ == '__main__':
         try:
             database.db.init_app(app)
             database.db.create_all()
-            utils.populate_tables(config.MOVIES_DATA_PATH)
+            imported_rows, imported_producers = CSVService.populate_tables(config.MOVIES_DATA_PATH)
+            print(f"\nData loading complete! Imported {imported_rows} movies. Imported {imported_producers} different producers.\n")
         except Exception as e:
-            print('The server encountered an internal error and was unable to start. Check your configuration file!')
-            print(e)
+            print('The server encountered an internal error and was unable to start. Check your configuration and movie files!')
+            print(type(e), e)
         else:
             app.run(host='0.0.0.0', debug=False)
