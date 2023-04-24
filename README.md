@@ -2,9 +2,9 @@
 # TEXO IT - Worst Movie Award API
 
 ## About The Project
-REST API to read the list of nominees and winners of the Worst Film category of the Golden Raspberry Awards from a CSV data source, store the data into an in-memory database and provide the producer with the longest interval between two awards, and the one who got two awards faster.
+REST API to read the list of nominees and winners of the Worst Film category of the Golden Raspberry Awards from a CSV data source, store the data into an in-memory database and return the producer with the longest interval between two awards, and the one who got two awards faster.
 
-### Important notes:
+### Important notes
 
 This api takes into account each producer when querying the minimum and maximum interval between two awards, even if the movie was produced in group. (Example: Producer Joel Silver was nominated alone in the year 1989 and the following year he is nominated again, but this time with Steven Perry, when processing Joel Silver this API considers both nominations.
 
@@ -44,7 +44,7 @@ Returns producers with maximum and minimum interval between two awards.
 
 ## Installation and Tests
 
-### Running locally
+### Local run
 
 + Clone the repo, set an python 3 virtual environment, install the dependencies from requirementes.txt and run the project:
 
@@ -80,15 +80,15 @@ The service will run on port $PORT.
   curl http://localhost:$PORT/api/v1/texo/producers-award-interval
 ```
 
-### Instructions to use another CSV file
+### Custom CSV file
 
-Change configuration file (app/config/settings.py) and **rerun the application**.
+To use another CSV data source change the configuration file (app/config/settings.py) and **rerun the application**.
 
 ```
   MOVIES_DATA_PATH = "your-movielist-path.csv"
 ```
 
-Remember that the csv file must have the structure below:
+Remember that the CSV file must have the structure below:
 
 ```
   year;title;studios;producers;winner
